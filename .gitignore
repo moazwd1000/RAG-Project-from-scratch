@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+venv/
+
+# Environment variables
+.env
+
+# VS Code
+.vscode/
+
+# Model / Hugging Face cache
+.cache/
+huggingface/
+models/
+
+# Generated RAG artifacts
+artifacts/*
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.faiss
+
+# Local document data
+data/*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
