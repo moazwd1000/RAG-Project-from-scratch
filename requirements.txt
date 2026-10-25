@@ -1,0 +1,9 @@
+pypdf
+nltk
+numpy
+sentence-transformers
+torch
+fastapi
+uvicorn
+requests
+python-dotenv
