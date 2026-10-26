@@ -1,3 +1,6 @@
+import time
+
+
 from sentence_transformers import (
     SentenceTransformer,
     CrossEncoder,
@@ -65,7 +68,7 @@ class RAGPipeline:
         # -----------------------------------------
         # 1. Dense retrieval
         # -----------------------------------------
-
+        start_time = time.perf_counter()
         dense_results = retrieve_top_k(
             [question],
             self.corpus_embeddings,
@@ -116,7 +119,8 @@ class RAGPipeline:
             final_indices
         )
 
-
+        end_time = time.perf_counter()
+        print("Retrieval Duration:",end_time-start_time,"seconds")
         return {
             "question": question,
             "dense_top_k": dense_indices,
@@ -125,10 +129,24 @@ class RAGPipeline:
         }
     
     def query(self,question):
+        start_time = time.perf_counter()
         retrieval_result = self.retrieve(question)
+        end_time = time.perf_counter()
+
         context = retrieval_result["context"]
         response = generation(question,context,MODEL_SERVER_URL,MODEL_API_KEY)
-        return {"question": question, "context": context, "answer": response}
+        end_time_generation = time.perf_counter()
+        sources = []
+        for index in context:
+            page = index["page"]
+            document = index["document"]
+            sources.append({"page": page, "document": document})
+        total_end = time.perf_counter()    
+        print("Retrieval Duration:",end_time-start_time,"seconds")
+        print("Generation Duration:",end_time_generation-end_time,"seconds")
+        print("Total Duration:",total_end-start_time,"seconds")
+        return {"question": question,"answer": response,"sources": sources,"latency": {"retrieval": end_time-start_time,"generation": end_time_generation-end_time,"total": total_end-start_time}}
+
     
     
 
